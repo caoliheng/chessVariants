@@ -2,58 +2,47 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const boardsize = [8,8]; 
+const boardsize = {
+  // standard board
+  rows: 8,
+  columns: 8,
+};
+
+const boardcolors = {
+  light: '#FFCE9E',
+  dark: '#D18B47',
+};
 
 function Square(props){
   return (
-    <button className="square" onClick={props.onClick} >
+    <button className="square" onClick={props.onClick} style={{background: props.boardcolor}}>
       {props.value}
     </button>
   );
 }
   
 class Board extends React.Component {  
-  renderSquare(i) {
+  renderSquare(r, c, i) {
     return (
       <Square 
       value={this.props.squares[i]} 
       onClick={() => this.props.onClick(i)}
+      boardcolor={(r + c) % 2 == 0 ? boardcolors.light : boardcolors.dark}
       />
     )
   }
 
   render() {
     let rows = [];
-    for (let r = 0; r < 3; ++r){
+    for (let r = 0; r < boardsize.rows; ++r){
       let cols = [];
-      for (let c = 0; c < 3; ++c){
-        cols.push(this.renderSquare(3*r + c));
+      for (let c = 0; c < boardsize.columns; ++c){
+        cols.push(this.renderSquare(r, c, 8*r + c));
       }
       rows.push(<div className="board-row">{cols}</div>)
     }
 
     return <div>{rows}</div>
-
-    // return (
-    //   <div>
-    //     {/* <div className="status">{this.props.status}</div> */}
-    //     <div className="board-row">
-    //       {this.renderSquare(0)}
-    //       {this.renderSquare(1)}
-    //       {this.renderSquare(2)}
-    //     </div>
-    //     <div className="board-row">
-    //       {this.renderSquare(3)}
-    //       {this.renderSquare(4)}
-    //       {this.renderSquare(5)}
-    //     </div>
-    //     <div className="board-row">
-    //       {this.renderSquare(6)}
-    //       {this.renderSquare(7)}
-    //       {this.renderSquare(8)}
-    //     </div>
-    //   </div>
-    // );
   }
 }
   
@@ -142,6 +131,7 @@ ReactDOM.render(
 );
   
 function calculateWinner(squares) {
+  // used for tic tac toe tutorial
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
